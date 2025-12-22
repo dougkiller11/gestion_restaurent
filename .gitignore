@@ -1,0 +1,36 @@
+# --- Java & Compiled Files ---
+*.class
+*.log
+*.jar
+*.war
+*.ear
+/target/
+
+# --- Maven ---
+# Ignore the build output directory
+bin/
+# If you use a wrapper
+.mvn/
+# Maven recovery files
+release.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+dependency-reduced-pom.xml
+
+# --- Eclipse Settings ---
+.metadata/
+.settings/
+.project
+.classpath
+.factorypath
+*.launch
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+# --- Database ---
+# It's good practice to keep data dumps out of the repo
+*.sql
