@@ -1,9 +1,6 @@
 package restau.ui;
 
 import restau.dao.ProfileDAO;
-import restau.ui.MainWindow;
-import restau.ui.DashboardWindow;
-import restau.ui.LoginWindow;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

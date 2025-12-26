@@ -9,6 +9,8 @@ public class Plat {
     private List<String> ingredient;
     private double prix;
     private boolean disponible;
+    private String imageUrl;
+    private String description;
 
     public Plat(int id, String nom, String categorie, List<String> ingredient, double prix, boolean disponible) {
         this.id = id;
@@ -17,6 +19,12 @@ public class Plat {
         this.ingredient = ingredient;
         this.prix = prix;
         this.disponible = disponible;
+    }
+
+    public Plat(int id, String nom, String categorie, double prix, boolean disponible, String imageUrl, String description) {
+        this(id, nom, categorie, null, prix, disponible);
+        this.imageUrl = imageUrl;
+        this.description = description;
     }
 
     public int getId() { return id; }
@@ -31,5 +39,9 @@ public class Plat {
     public void setPrix(double prix) { this.prix = prix; }
     public boolean isDisponible() { return disponible; }
     public void setDisponible(boolean disponible) { this.disponible = disponible; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }
 

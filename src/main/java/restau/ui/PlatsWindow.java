@@ -15,7 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import restau.ui.MainWindow;
 
 public class PlatsWindow {
 
@@ -29,13 +28,13 @@ public class PlatsWindow {
 
         ComboBox<String> catField = new ComboBox<>();
         catField.getItems().addAll(
-                "entree",
-                "burger",
-                "poisson",
-                "poulet",
-                "pizza",
-                "desert",
-                "boisson"
+                "Entree",
+                "Burger",
+                "Poisson",
+                "Poulet",
+                "Pizza",
+                "Desert",
+                "Boisson"
         );
         catField.setPromptText("Catégorie");
         catField.setEditable(false);

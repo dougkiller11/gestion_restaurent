@@ -10,12 +10,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
-import restau.ui.PlatsWindow;
-import restau.ui.ClientsWindow;
-import restau.ui.ProfileWindow;
-import restau.ui.DashboardWindow;
-import restau.ui.LoginWindow;
-
 public class MainWindow {
 
     public void show(Stage stage) {

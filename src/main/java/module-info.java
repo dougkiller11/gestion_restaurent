@@ -1,5 +1,5 @@
 module Restau {
-    requires java.sql;
+    requires transitive java.sql; // re-export so consumers see java.sql types
     requires javafx.controls;
     requires javafx.fxml;
     requires transitive javafx.graphics;
@@ -11,3 +11,4 @@ module Restau {
     exports restau.services;
 }
 
+ 

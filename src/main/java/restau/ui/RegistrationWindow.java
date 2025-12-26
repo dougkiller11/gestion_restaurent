@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import restau.dao.AuthDAO;
-import restau.ui.LoginWindow;
 
 public class RegistrationWindow {
 

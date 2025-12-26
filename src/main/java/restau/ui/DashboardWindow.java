@@ -11,9 +11,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import restau.ui.MainWindow;
-import restau.ui.ProfileWindow;
-import restau.ui.LoginWindow;
 
 import java.util.Arrays;
 import java.util.List;

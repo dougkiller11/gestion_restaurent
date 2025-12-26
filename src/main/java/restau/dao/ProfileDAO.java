@@ -1,7 +1,5 @@
 package restau.dao;
 
-import restau.dao.DBConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
