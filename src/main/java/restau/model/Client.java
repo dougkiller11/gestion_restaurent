@@ -11,6 +11,9 @@ public class Client {
     private List<Commande> commandes;
     private String phone;
     private String address;
+    private String role;
+    private String statut;
+    private boolean actif = true;
 
     public Client(int id, String nom, String prenom, String username, String password) {
         this.id = id;
@@ -34,6 +37,12 @@ public class Client {
     public void setPhone(String phone) { this.phone = phone; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public String getStatut() { return statut; }
+    public void setStatut(String statut) { this.statut = statut; }
+    public boolean isActif() { return actif; }
+    public void setActif(boolean actif) { this.actif = actif; }
     public List<Commande> getCommandes() { return commandes; }
     public void setCommandes(List<Commande> commandes) { this.commandes = commandes; }
 

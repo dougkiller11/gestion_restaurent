@@ -46,7 +46,7 @@ public class DashboardWindow {
         panel.setStyle("-fx-background-color: rgba(20,22,29,0.92); -fx-background-radius: 14px;");
         panel.setMaxWidth(820);
 
-        VBox menu = createMenuCard(stage);
+        VBox menu = AdminNavFactory.create(stage);
         menu.setMinWidth(220);
         menu.setMaxWidth(220);
 
@@ -74,47 +74,6 @@ public class DashboardWindow {
         stage.show();
     }
 
-    private VBox createMenuCard(Stage stage) {
-        Label hello = new Label("Hello, Admin");
-        hello.setStyle("-fx-text-fill: #e9edf4; -fx-font-size: 14px; -fx-font-weight: bold;");
-
-        Label avatar = new Label("👩");
-        avatar.setStyle("-fx-background-color: #f0c14b; -fx-text-fill: #1f1f1f; -fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 50%;");
-
-        VBox header = new VBox(6, hello, avatar);
-        header.setAlignment(Pos.CENTER);
-
-        Button profile = createMenuButton("Profil");
-        Button dashboard = createMenuButton("Dashboard");
-        Button settings = createMenuButton("Paramètres");
-        Button logout = createMenuButton("Se déconnecter");
-
-        profile.setOnAction(e -> new ProfileWindow().show(stage));
-        dashboard.setOnAction(e -> new DashboardWindow().show(stage));
-        settings.setOnAction(e -> new MainWindow().show(stage));
-        logout.setOnAction(e -> new LoginWindow().show(stage));
-
-        VBox card = new VBox(12, header, profile, dashboard, settings, logout);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(16));
-        card.setPrefWidth(200);
-        card.setStyle("-fx-background-color: rgba(17,24,33,0.95); -fx-background-radius: 12px; -fx-border-color: #2f3745; -fx-border-radius: 12px;");
-        return card;
-    }
-
-    private Button createMenuButton(String text) {
-        String base = "-fx-background-color: #1b2431; -fx-text-fill: #e9edf4; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-border-color: #2f3745; -fx-border-radius: 8px;";
-        String hover = "-fx-background-color: #253041; -fx-text-fill: #f5c242; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-border-color: #374458; -fx-border-radius: 8px;";
-        Button b = new Button(text);
-        b.setStyle(base);
-        b.setAlignment(Pos.CENTER_LEFT);
-        b.setMinHeight(34);
-        b.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(b, javafx.scene.layout.Priority.ALWAYS);
-        b.setOnMouseEntered(evt -> b.setStyle(hover));
-        b.setOnMouseExited(evt -> b.setStyle(base));
-        return b;
-    }
 
     private VBox card(String title, String value, String icon) {
         Label t = new Label(title);

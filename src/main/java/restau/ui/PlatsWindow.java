@@ -4,65 +4,95 @@ import restau.dao.PlatDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PlatsWindow {
 
     public void show(Stage stage) {
-        Label title = new Label("Ajouter un plat");
-        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #f5c242;");
+        Label title = new Label("Nouveau Plat");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #f5c242;");
 
         TextField nomField = new TextField();
         nomField.setPromptText("Nom du plat");
-        nomField.setMaxWidth(360);
+        nomField.setPrefWidth(420);
+        styleField(nomField);
+
+        TextField prixField = new TextField();
+        prixField.setPromptText("Prix (ex: 12.50)");
+        prixField.setPrefWidth(420);
+        styleField(prixField);
 
         ComboBox<String> catField = new ComboBox<>();
         catField.getItems().addAll(
-                "Entree",
+                "Plat",
+                "Entrée",
                 "Burger",
                 "Poisson",
                 "Poulet",
                 "Pizza",
-                "Desert",
+                "Dessert",
                 "Boisson"
         );
         catField.setPromptText("Catégorie");
-        catField.setEditable(false);
-        catField.setMaxWidth(360);
+        catField.setPrefWidth(420);
+        catField.setStyle("-fx-background-color: #0f121a; -fx-text-fill: #d8dde6; -fx-border-color: #1f2430; -fx-border-radius: 6px;");
 
-        TextField prixField = new TextField();
-        prixField.setPromptText("Prix (ex: 12.50)");
-        prixField.setMaxWidth(360);
+        List<String> defaultIngredients = Arrays.asList(
+                "Boeuf", "Champignon", "Creme Fraiche", "Fromage", "Mozzarella",
+                "Oignon", "Olives", "Tomate", "Poulet", "Poivron", "Basilic", "Saumon", "Thon"
+        );
+        VBox ingredientsBox = new VBox(6);
+        ingredientsBox.setPadding(new Insets(8));
+        for (String ing : defaultIngredients) {
+            CheckBox cb = new CheckBox(ing);
+            cb.setStyle("-fx-text-fill: #e6ebf3;");
+            ingredientsBox.getChildren().add(cb);
+        }
+        ScrollPane ingredientsPane = new ScrollPane(ingredientsBox);
+        ingredientsPane.setPrefHeight(220);
+        ingredientsPane.setFitToWidth(true);
+        ingredientsPane.setStyle("-fx-background: #0f121a; -fx-border-color: #1f2430; -fx-border-radius: 6px; -fx-background-radius: 6px;");
 
         TextField imageField = new TextField();
-        imageField.setPromptText("URL image ou chemin local");
-        imageField.setMaxWidth(360);
+        imageField.setPromptText("URL de l'image (http://...)");
+        imageField.setPrefWidth(420);
+        styleField(imageField);
 
         TextArea descField = new TextArea();
-        descField.setPromptText("Description du plat / ingrédients");
+        descField.setPromptText("Description");
         descField.setPrefRowCount(3);
-        descField.setMaxWidth(360);
+        descField.setPrefWidth(420);
+        descField.setStyle("-fx-control-inner-background: #0f121a; -fx-text-fill: #e6ebf3; -fx-border-color: #1f2430; -fx-background-radius: 6px; -fx-border-radius: 6px;");
 
         CheckBox dispoBox = new CheckBox("Disponible");
         dispoBox.setSelected(true);
-        dispoBox.setStyle("-fx-text-fill: #d8dde6;");
+        dispoBox.setStyle("-fx-text-fill: #e6ebf3;");
 
-        Label status = new Label();
-        status.setStyle("-fx-text-fill: #f5c242;");
-
-        Button saveBtn = new Button("Enregistrer");
+        Button saveBtn = new Button("Ajouter le plat");
         saveBtn.setDefaultButton(true);
-        saveBtn.setStyle("-fx-background-color: linear-gradient(#f7b733, #f5a623); -fx-text-fill: #1f1f1f; -fx-font-weight: bold; -fx-background-radius: 6px;");
+        saveBtn.setPrefWidth(200);
+        saveBtn.setStyle("-fx-background-color: linear-gradient(#f7b733, #f5a623); -fx-text-fill: #1f1f1f; -fx-font-weight: bold; -fx-background-radius: 8px;");
+
+        Button backBtn = new Button("Retour");
+        backBtn.setOnAction(e -> new MainWindow().show(stage));
+        backBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #e9edf4; -fx-border-color: #2f3747; -fx-border-radius: 6px;");
+
         saveBtn.setOnAction(e -> {
             String nom = nomField.getText().trim();
             String cat = catField.getValue() == null ? "" : catField.getValue().trim();
@@ -71,67 +101,99 @@ public class PlatsWindow {
             String desc = descField.getText().trim();
 
             if (nom.isEmpty() || cat.isEmpty() || prixTxt.isEmpty()) {
-                status.setText("Nom, catégorie et prix sont obligatoires.");
+                showAlert("Champs requis", "Nom, catégorie et prix sont obligatoires.");
                 return;
             }
             double prix;
             try {
                 prix = Double.parseDouble(prixTxt.replace(',', '.'));
             } catch (NumberFormatException ex) {
-                status.setText("Prix invalide.");
+                showAlert("Prix invalide", "Merci de saisir un nombre, ex: 12.50");
                 return;
             }
 
-            new PlatDAO().addPlat(nom, cat, prix, dispoBox.isSelected(), img.isEmpty() ? null : img, desc.isEmpty() ? null : desc);
-            status.setText("Plat ajouté.");
-            nomField.clear();
-            catField.setValue(null);
-            prixField.clear();
-            imageField.clear();
-            descField.clear();
-            dispoBox.setSelected(true);
+            List<String> selectedIng = new ArrayList<>();
+            ingredientsBox.getChildren().stream()
+                    .filter(n -> n instanceof CheckBox && ((CheckBox) n).isSelected())
+                    .forEach(n -> selectedIng.add(((CheckBox) n).getText()));
+
+            int createdId = new PlatDAO().addPlat(
+                    nom,
+                    cat,
+                    prix,
+                    dispoBox.isSelected(),
+                    img.isEmpty() ? null : img,
+                    desc.isEmpty() ? null : desc,
+                    selectedIng
+            );
+
+            if (createdId > 0) {
+                showAlert("Succès", "Plat ajouté avec succès.");
+                nomField.clear();
+                catField.setValue(null);
+                prixField.clear();
+                imageField.clear();
+                descField.clear();
+                dispoBox.setSelected(true);
+                ingredientsBox.getChildren().forEach(n -> {
+                    if (n instanceof CheckBox cb) cb.setSelected(false);
+                });
+            } else {
+                showAlert("Erreur", "Impossible d'ajouter le plat, réessayez.");
+            }
         });
 
-        Button backBtn = new Button("Retour");
-        backBtn.setOnAction(e -> new MainWindow().show(stage));
-        backBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #e9edf4; -fx-border-color: #2f3747; -fx-border-radius: 6px;");
-
-        GridPane form = new GridPane();
-        form.setHgap(10);
-        form.setVgap(10);
-        form.addRow(0, new Label("Nom"), nomField);
-        form.addRow(1, new Label("Catégorie"), catField);
-        form.addRow(2, new Label("Prix"), prixField);
-        form.addRow(3, new Label("Image"), imageField);
-        form.addRow(4, new Label("Description"), descField);
-        form.addRow(5, new Label(""), dispoBox);
+        VBox form = new VBox(12,
+                nomField,
+                prixField,
+                catField,
+                new Label("Ingrédients :"),
+                ingredientsPane,
+                imageField,
+                descField,
+                dispoBox
+        );
+        form.setAlignment(Pos.CENTER_LEFT);
+        form.setPadding(new Insets(4, 0, 8, 0));
         form.getChildren().stream()
                 .filter(n -> n instanceof Label)
-                .forEach(n -> ((Label) n).setStyle("-fx-text-fill: #c7ced7;"));
+                .forEach(n -> ((Label) n).setStyle("-fx-text-fill: #e6ebf3; -fx-font-size: 13px;"));
 
-        HBox actions = new HBox(10, saveBtn, backBtn);
-        actions.setAlignment(Pos.CENTER_RIGHT);
+        HBox actions = new HBox(12, backBtn, saveBtn);
+        actions.setAlignment(Pos.CENTER);
 
-        VBox card = new VBox(14, title, form, actions, status);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(20));
-        card.setStyle("-fx-background-color: rgba(20,22,29,0.92); -fx-background-radius: 12px;");
+        VBox card = new VBox(18, title, form, actions);
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setPadding(new Insets(22));
+        card.setStyle("-fx-background-color: #0b0d13; -fx-background-radius: 14px; -fx-border-color: #1f2430; -fx-border-radius: 14px;");
 
-        StackPane root = new StackPane(card);
-        root.setPadding(new Insets(28));
-        root.setStyle("""
-            -fx-background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80');
-            -fx-background-size: cover;
-            -fx-background-position: center center;
-            -fx-background-color: rgba(0,0,0,0.45);
-            -fx-background-blend-mode: overlay;
-        """);
+        VBox nav = AdminNavFactory.create(stage);
+        nav.setMinWidth(220);
 
-        Scene scene = new Scene(root, 720, 520);
-        stage.setTitle("Plats - Restaurant Manager");
+        HBox layout = new HBox(16, nav, card);
+        layout.setAlignment(Pos.TOP_LEFT);
+        layout.setPadding(new Insets(26));
+
+        StackPane root = new StackPane(layout);
+        root.setStyle("-fx-background-color: #0a0c12;");
+
+        Scene scene = new Scene(root, 900, 820);
+        stage.setTitle("Plats - Nouveau plat");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    private void styleField(TextField field) {
+        field.setStyle("-fx-background-color: #0f121a; -fx-text-fill: #e6ebf3; -fx-border-color: #1f2430; -fx-background-radius: 6px; -fx-border-radius: 6px;");
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
 

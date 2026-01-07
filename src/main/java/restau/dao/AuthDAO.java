@@ -48,6 +48,22 @@ public class AuthDAO {
     }
 
     public AuthResult authenticate(String username, String password) {
+        String adminSql = "SELECT id, nom, prenom FROM admins WHERE username = ? AND password = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(adminSql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new AuthResult(true, "admin", rs.getInt("id"), false,
+                            rs.getString("nom") + " " + rs.getString("prenom"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return AuthResult.failure();
+        }
+
         String empSql = "SELECT id, nom, prenom, role FROM employes WHERE username = ? AND password = ? AND actif = true";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(empSql)) {

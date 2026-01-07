@@ -50,6 +50,18 @@ public class DBConnection {
         """);
 
         stmt.execute("""
+            CREATE TABLE IF NOT EXISTS admins (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nom VARCHAR(100),
+                prenom VARCHAR(100),
+                username VARCHAR(50) UNIQUE,
+                password VARCHAR(255),
+                email VARCHAR(150),
+                phone VARCHAR(50)
+            )
+        """);
+
+        stmt.execute("""
             CREATE TABLE IF NOT EXISTS clients (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 nom VARCHAR(100),
@@ -71,6 +83,21 @@ public class DBConnection {
         } catch (SQLException dup) {
             if (!"42S21".equals(dup.getSQLState()) && dup.getErrorCode() != 1060) throw dup;
         }
+        try {
+            stmt.execute("ALTER TABLE clients ADD COLUMN role VARCHAR(50) DEFAULT 'client'");
+        } catch (SQLException dup) {
+            if (!"42S21".equals(dup.getSQLState()) && dup.getErrorCode() != 1060) throw dup;
+        }
+        try {
+            stmt.execute("ALTER TABLE clients ADD COLUMN statut VARCHAR(50)");
+        } catch (SQLException dup) {
+            if (!"42S21".equals(dup.getSQLState()) && dup.getErrorCode() != 1060) throw dup;
+        }
+        try {
+            stmt.execute("ALTER TABLE clients ADD COLUMN actif BOOLEAN DEFAULT TRUE");
+        } catch (SQLException dup) {
+            if (!"42S21".equals(dup.getSQLState()) && dup.getErrorCode() != 1060) throw dup;
+        }
 
         stmt.execute("""
             CREATE TABLE IF NOT EXISTS plats (
@@ -78,14 +105,25 @@ public class DBConnection {
                 nom VARCHAR(100),
                 categorie VARCHAR(50),
                 prix DOUBLE,
-                image_url VARCHAR(255),
+                image_url TEXT,
                 description TEXT,
-                disponible BOOLEAN
+                disponible BOOLEAN,
+                reclamations INT DEFAULT 0
             )
         """);
 
         try {
-            stmt.execute("ALTER TABLE plats ADD COLUMN image_url VARCHAR(255)");
+            stmt.execute("ALTER TABLE plats ADD COLUMN image_url TEXT");
+        } catch (SQLException dup) {
+            if (!"42S21".equals(dup.getSQLState()) && dup.getErrorCode() != 1060) throw dup;
+        }
+        try {
+            stmt.execute("ALTER TABLE plats MODIFY COLUMN image_url TEXT");
+        } catch (SQLException ignore) {
+            // ignore if already large enough / not supported
+        }
+        try {
+            stmt.execute("ALTER TABLE plats ADD COLUMN reclamations INT DEFAULT 0");
         } catch (SQLException dup) {
             if (!"42S21".equals(dup.getSQLState()) && dup.getErrorCode() != 1060) throw dup;
         }
@@ -140,6 +178,32 @@ public class DBConnection {
         """);
 
         stmt.execute("""
+            CREATE TABLE IF NOT EXISTS catalogue_ingredients (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nom VARCHAR(100) UNIQUE,
+                is_available BOOLEAN DEFAULT TRUE
+            )
+        """);
+
+        stmt.executeUpdate("""
+            INSERT IGNORE INTO catalogue_ingredients (nom, is_available) VALUES
+            ('Tomate', TRUE),
+            ('Fromage', TRUE),
+            ('Oignon', TRUE),
+            ('Pain', TRUE),
+            ('Salade', TRUE),
+            ('Poulet', TRUE),
+            ('Boeuf', TRUE),
+            ('Poisson', TRUE),
+            ('Riz', TRUE),
+            ('Pates', TRUE),
+            ('Sauce Tomate', TRUE),
+            ('Creme Fraiche', TRUE),
+            ('Mozzarella', TRUE),
+            ('Champignon', TRUE)
+        """);
+
+        stmt.execute("""
             CREATE TABLE IF NOT EXISTS user_profile (
                 id INT PRIMARY KEY,
                 nom VARCHAR(100),
@@ -157,8 +221,8 @@ public class DBConnection {
         """);
 
         stmt.executeUpdate("""
-            INSERT IGNORE INTO employes (nom, prenom, role, username, password, actif)
-            VALUES ('Admin', 'Root', 'admin', 'root', 'root', TRUE)
+            INSERT IGNORE INTO admins (nom, prenom, username, password, email, phone)
+            VALUES ('Admin', 'Root', 'admin', 'admin', 'admin@example.com', '')
         """);
     }
 }

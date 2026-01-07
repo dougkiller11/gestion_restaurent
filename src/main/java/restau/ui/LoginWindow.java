@@ -57,7 +57,7 @@ public class LoginWindow {
             if (auth.success) {
                 status.setText("Bienvenue " + auth.displayName + " (" + auth.role + ")");
                 if (auth.client) {
-                    new BoutiqueWindow().show(stage);
+                    new MenuAdminWindow().show(stage);
                 } else {
                     new MainWindow().show(stage);
                 }
